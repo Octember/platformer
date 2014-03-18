@@ -6,10 +6,10 @@ MAX_SPEED = 0.3
 
 class Player:
 
-	def __init__(self):
-		self.x, self.y = 300, 5
+	def __init__(self, position):
+		self.x, self.y = position
 		
-		self.width = 10
+		self.width = 20
 		self.height = 20
 		self.color = (77, 204, 77)
 		self.y_velocity, self.x_velocity = 0, 0
@@ -24,8 +24,10 @@ class Player:
 		self.y_velocity = -0.5
 
 	def collide_x(self, wall):
-		if wall.color == DEATH:
-			self.die()
+		if wall.color == SHRINK:
+			self.shrink()
+		elif wall.color == GROW:
+			self.grow()
 		elif wall.color == LEDGE:
 			return
 		# Wall is normal ground
@@ -41,8 +43,10 @@ class Player:
 				self.y = wall.rect.y - self.height
 				self.y_velocity = 0	
 		else:
-			if wall.color == DEATH:
-				self.die()
+			if wall.color == SHRINK:
+				self.shrink()
+			elif wall.color == GROW:
+				self.grow()
 			collision = wall.rect
 			if self.y_velocity > 0:
 				self.y = collision.y - self.height
@@ -52,8 +56,13 @@ class Player:
 				self.y = collision.bottom
 				self.y_velocity = 0
 
-	def die(self):
+	def shrink(self):
 		self.color = (0, 0, 0)
+		self.height, self.width = (10, 5)
+
+	def grow(self):
+		self.color = (255, 255, 0)
+		self.height, self.width = (100, 50)
 
 	def move_left(self):
 		self.x_velocity = -MAX_SPEED
