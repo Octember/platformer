@@ -8,10 +8,11 @@ class Player:
 
 	def __init__(self):
 		self.x, self.y = 300, 5
-		self.y_velocity, self.x_velocity = 0, 0
+		
 		self.width = 10
 		self.height = 20
 		self.color = (77, 204, 77)
+		self.y_velocity, self.x_velocity = 0, 0
 
 	def position(self):
 		return (int(self.x), int(self.y))
@@ -35,13 +36,13 @@ class Player:
 			self.x = collision.left - self.width
 
 	def collide_y(self, wall):
-		if wall.color == DEATH:
-			self.die()
-		elif wall.color == LEDGE:
+		if wall.color == LEDGE:
 			if self.y_velocity > 0 and self.rect().bottom - wall.rect.top <= LEDGE_HEIGHT:
 				self.y = wall.rect.y - self.height
 				self.y_velocity = 0	
 		else:
+			if wall.color == DEATH:
+				self.die()
 			collision = wall.rect
 			if self.y_velocity > 0:
 				self.y = collision.y - self.height
@@ -53,7 +54,6 @@ class Player:
 
 	def die(self):
 		self.color = (0, 0, 0)
-		print "die"
 
 	def move_left(self):
 		self.x_velocity = -MAX_SPEED

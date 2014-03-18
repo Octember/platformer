@@ -7,6 +7,7 @@ DEATH = (203, 0, 0)
 LEDGE = (0, 120, 120)
 LEDGE_HEIGHT = 2
 BLOCK_SIZE = 20
+GRAVITY = 0.001
 
 class Wall:
 	def __init__(self, rect, char):
@@ -15,8 +16,6 @@ class Wall:
 
 	def collide(self, other_rect):
 		return self.rect.colliderect(other_rect)
-
-
 
 def get_color(value):
 	if value == ' ':
