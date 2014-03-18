@@ -5,14 +5,6 @@ from pygame.locals import *
 from player import Player
 from world import *
 
-GRAVITY = 0.001
-BLOCK_SIZE = 20
-
-
-
-
-
-
 def main():
 	# Initialize
 	pygame.init()
@@ -22,14 +14,9 @@ def main():
 
 	# Number of screen_rows and cols visible on the screen at any given point
 	screen_cols, screen_rows = 30, 20
-	screen_width, screen_height = screen_cols*BLOCK_SIZE, screen_rows*BLOCK_SIZE
+	screen_width, screen_height = screen_cols * BLOCK_SIZE, screen_rows * BLOCK_SIZE
 	screen = pygame.display.set_mode((screen_width, screen_height))
 	pygame.display.set_caption('Zoom Man 1.0')
-
-	# Return the grid member at the given point 
-	def getSquareAt(pos):
-		x, y = int(pos[0] + screen_x) / BLOCK_SIZE, int(pos[1] + screen_y) / BLOCK_SIZE
-		return grid[y][x]
 
 	player = Player()
 	clock = pygame.time.Clock()
@@ -60,7 +47,8 @@ def main():
 					right_down = False
 			if event.type == MOUSEBUTTONDOWN:
 				pos = pygame.mouse.get_pos()
-				tile = getSquareAt(pos)
+				x, y = int(pos[0] + screen_x) / BLOCK_SIZE, int(pos[1] + screen_y) / BLOCK_SIZE
+				tile = grid[y][x]
 				if event.button == 1 and tile.color == LAND:
 						walls.remove(tile.rect)
 						tile.color = SKY
@@ -94,12 +82,6 @@ def main():
 		for row in grid[grid_y : grid_y + screen_rows + 1]:
 			for square in row[grid_x : grid_x + screen_cols + 1]:
 				screen.fill(square.color, square.rect.move(-screen_x, -screen_y))
-
-		# Draw grid. Slows everything way down, for testing speed
-		# for i in range(screen_cols + 1):
-		# 	for j in range(screen_rows):
-		# 		rect = pygame.Rect(i * BLOCK_SIZE - screen_x % BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE + 1, BLOCK_SIZE + 1)
-		# 		pygame.draw.rect(screen, (0, 0, 0), rect, 1)
 
 		# Draw player
 		pygame.draw.rect(screen, player.color, player.rect().move(-screen_x, -screen_y), 0)
