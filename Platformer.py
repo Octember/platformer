@@ -2,115 +2,16 @@
 
 import pygame
 from pygame.locals import *
+from player import Player
+from world import *
 
 GRAVITY = 0.001
-MAX_SPEED = 0.3
 BLOCK_SIZE = 20
-LAND = (186, 144, 28)
-SKY = (50, 255, 255)
-DEATH = (203, 0, 0)
-LEDGE = (0, 120, 120)
 
 
-class Character:
-
-	def __init__(self):
-		self.x, self.y = 300, 5
-		self.y_velocity, self.x_velocity = 0, 0
-		self.width = 10
-		self.height = 20
-		self.color = (77, 204, 77)
-
-	def position(self):
-		return (int(self.x), int(self.y))
-
-	def rect(self):
-		return pygame.Rect(self.position(), (self.width, self.height))
-
-	def jump(self):
-		self.y_velocity = -0.5
-
-	def collide_x(self, wall):
-		if wall.color == DEATH:
-			self.die()
-		if wall.color == LEDGE:
-			return
-
-		collision = wall.rect
-		if self.x_velocity < 0: # Moving left
-			self.x = collision.right
-		elif self.x_velocity > 0: # Moving right
-			self.x = collision.left - self.width
-
-	def collide_y(self, wall):
-		if wall.color == DEATH:
-			self.die()
-
-		collision = wall.rect
-		if self.y_velocity > 0:
-			self.y = collision.y - self.height
-			self.y_velocity = 0	
-		elif self.y_velocity < 0 and wall.color != LEDGE: 
-			# Moving up
-			self.y = collision.bottom
-			self.y_velocity = 0
-
-	def die(self):
-		self.color = (0, 0, 0)
-		print "die"
-
-	def move_left(self):
-		self.x_velocity = -MAX_SPEED
-
-	def move_right(self):
-		self.x_velocity = MAX_SPEED
-
-	def stop_x(self):
-		self.x_velocity = 0
-
-	def update_x(self, elapsed_time):
-		self.x += self.x_velocity * elapsed_time
-
-	def update_y(self, elapsed_time):
-		self.y += self.y_velocity * elapsed_time
 
 
-class Wall:
-	def __init__(self, rect, char):
-		self.rect = rect
-		self.color = get_color(char)
 
-	def collide(self, other_rect):
-		return self.rect.colliderect(other_rect)
-
-
-def load_map(filename):
-	grid = []
-	solid_tiles = []
-	row = 0
-	for line in open(filename, 'r'):
-		# if line[0] == "#":
-		# 	continue
-		tile_row = []
-		for col, char in enumerate(line.strip()):
-			tile = Wall(pygame.Rect(col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), char)
-			tile_row.append(tile)
-			if tile.color != SKY:
-				solid_tiles.append(tile)
-
-		grid.append(tile_row)
-		row += 1
-	return grid, solid_tiles
-
-def get_color(value):
-	if value == ' ':
-		return SKY
-	elif value == '#':
-		return LAND
-	elif value == '$':
-		return DEATH
-	elif value == 'L':
-		return LEDGE
 
 def main():
 	# Initialize
@@ -130,7 +31,7 @@ def main():
 		x, y = int(pos[0] + screen_x) / BLOCK_SIZE, int(pos[1] + screen_y) / BLOCK_SIZE
 		return grid[y][x]
 
-	player = Character()
+	player = Player()
 	clock = pygame.time.Clock()
 	font = pygame.font.SysFont(None, 30)
 
