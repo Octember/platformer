@@ -1,17 +1,8 @@
 import pygame
 from pygame.locals import *
+from sprites import Goomba
 
-LAND = (186, 144, 28)
-SKY = (50, 255, 255)
-SHRINK = (203, 0, 0)
-GROW = (50, 50, 255)
-LEDGE = (0, 120, 120)
-
-LEDGE_HEIGHT = 5
-GRAVITY = 0.001
-
-SCALE_FACTOR = 20
-BLOCK_SIZE = 10
+from globals import *
 
 class Wall:
 	def __init__(self, rect, char):
@@ -41,6 +32,7 @@ class Map:
 	def load_map(self, filename):
 		self.grid = []
 		self.walls = []
+		self.enemies = []
 		row = 0
 		for line in open(filename, 'r'):
 			# if line[0] == "#":
@@ -51,12 +43,22 @@ class Map:
 				if char == '1':
 					self.start_position = col * BLOCK_SIZE, row * BLOCK_SIZE
 					char = ' '
+				elif char == 'G':
+					self.enemies.append(Goomba((col * BLOCK_SIZE, row * BLOCK_SIZE)))
+					char = ' '
 
-				tile = Wall(pygame.Rect(col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), char)
+				tile = Wall(pygame.Rect(col * BLOCK_SIZE, row * BLOCK_SIZE,
+											 BLOCK_SIZE, BLOCK_SIZE), char)
 				tile_row.append(tile)
 				if tile.color != SKY:
 					self.walls.append(tile)
 
 			self.grid.append(tile_row)
 			row += 1
-		self.height, self.width = len(self.grid) * SCALE_FACTOR, len(self.grid[0]) * SCALE_FACTOR
+		self.height, self.width = len(self.grid) * BLOCK_SIZE, len(self.grid[0]) * BLOCK_SIZE
+
+	def nearby_walls(self, rect):
+		x1, x2 = rect.x / BLOCK_SIZE, (rect.x + rect.width) / BLOCK_SIZE + 1
+		y1, y2 = rect.y / BLOCK_SIZE, (rect.y + rect.height) / BLOCK_SIZE + 1 
+		return [tile for row in self.grid[y1 : y2] for tile in row[x1 : x2] if tile.color != SKY]
+

@@ -2,14 +2,19 @@
 
 import pygame
 from pygame.locals import *
-from player import Player
-from world import *
+from sprites import Player, Goomba
+from world import Map
+from globals import *
 
 def main():
 	# Initialize
 	pygame.init()
 
 	map = Map('map.db')
+	player = Player(map.start_position)
+
+	goombas = pygame.sprite.Group(map.enemies)
+	all_sprites = pygame.sprite.Group(map.enemies + [player])
 
 	# Number of screen_rows and cols visible on the screen at any given point
 	
@@ -18,7 +23,6 @@ def main():
 	screen = pygame.display.set_mode((screen_width, screen_height))
 	pygame.display.set_caption('Zoom Man 1.0')
 
-	player = Player(map.start_position)
 	clock = pygame.time.Clock()
 	font = pygame.font.SysFont(None, 30)
 
@@ -30,19 +34,19 @@ def main():
 			if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
 				return
 			if event.type == KEYDOWN:
-				if event.key == K_LEFT:
+				if event.key in (K_LEFT, K_a):
 					left_down = True
 					player.move_left()
-				if event.key == K_RIGHT:
+				if event.key in (K_RIGHT, K_d):
 					right_down = True
 					player.move_right()
-				if event.key == K_SPACE:
+				if event.key in (K_SPACE, K_w):
 					player.jump()
 			if event.type == KEYUP:
-				if event.key == K_LEFT:
+				if event.key in (K_LEFT, K_a):
 					player.move_right() if right_down else player.stop_x()
 					left_down = False
-				elif event.key == K_RIGHT:
+				elif event.key in (K_RIGHT, K_d):
 					player.move_left() if left_down else player.stop_x()
 					right_down = False
 			if event.type == MOUSEBUTTONDOWN:
@@ -50,32 +54,38 @@ def main():
 				x, y = int(pos[0] + screen_x) / BLOCK_SIZE, int(pos[1] + screen_y) / BLOCK_SIZE
 				tile = map.grid[y][x]
 				if event.button == 1 and tile.color == LAND:
-						map.walls.remove(tile.rect)
-						tile.color = SKY
+					map.walls.remove(tile.rect)
+					tile.color = SKY
 				elif event.button == 3 and tile.color == SKY:
-					 	map.walls.append(tile)
-					 	tile.color = LAND
+					map.walls.append(tile)
+					tile.color = LAND
 
 		elapsed_time = clock.tick()
-		# Update Player
 
-		# Horizontal movement
-		player.update_x(elapsed_time)
+		# Update all creatures
+		for creature in all_sprites:
+			creature.update_x(elapsed_time)
+			collisions = [wall for wall in map.nearby_walls(creature.rect)]
+			for wall in collisions:
+				if wall.collide(creature.rect):
+					creature.collide_x(wall)
 
-		collisions = [wall for wall in map.walls if wall.collide(player.rect())]
-		for wall in collisions:
-			player.collide_x(wall)
+			creature.y_velocity += GRAVITY * elapsed_time
+			creature.update_y(elapsed_time)
 
-		# Vertical movement
-		player.y_velocity += GRAVITY * elapsed_time
-		player.update_y(elapsed_time)
+			collisions = [wall for wall in map.nearby_walls(creature.rect)]
+			for wall in collisions:
+				if wall.collide(creature.rect):
+					creature.collide_y(wall)
 
-		collisions = [wall for wall in map.walls if wall.collide(player.rect())]
-		for wall in collisions:
-			player.collide_y(wall)
+		collided_enemies = pygame.sprite.spritecollide(player, goombas, False) 
+		for enemy in collided_enemies:
+			player.damage(10)
 
-		screen_x, screen_y = max(player.x - 250, 0), max(player.y - 250, 0)
-		screen_x, screen_y = min(screen_x, map.width - screen_width), min(screen_y, map.height - screen_height)
+		# Position screen
+		screen_x, screen_y = max(player.rect.x - 250, 0), max(player.rect.y - 250, 0)
+		screen_x = min(screen_x, map.width - screen_width)
+		screen_y = min(screen_y, map.height - screen_height)
 
 		# Draw the visible map
 		grid_x, grid_y = int(screen_x) / BLOCK_SIZE, int(screen_y) / BLOCK_SIZE
@@ -83,11 +93,14 @@ def main():
 			for square in row[grid_x : grid_x + screen_cols + 1]:
 				screen.fill(square.color, square.rect.move(-screen_x, -screen_y))
 
-		# Draw player
-		pygame.draw.rect(screen, player.color, player.rect().move(-screen_x, -screen_y), 0)
+		# Draw health bar
+		pygame.draw.rect(screen, (250, 0, 0), pygame.Rect(screen_width - 100, 5, player.health, 20), 0)
+		# Draw enemies
+		for creature in all_sprites:
+			pygame.draw.rect(screen, creature.color, creature.rect.move(-screen_x, -screen_y), 0)
 
-		# Write FPS
-		text = font.render('FPS: ' + str(1000 / elapsed_time), True, (255, 255, 255), SKY)
+		# Draw FPS
+		text = font.render('FPS: ' + str(1000 / elapsed_time), True, (0, 0, 0), SKY)
 		screen.blit(text, text.get_rect())
 
 		pygame.display.flip()
