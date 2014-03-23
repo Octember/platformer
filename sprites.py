@@ -3,48 +3,70 @@ import math
 from pygame.locals import *
 from globals import *
 
+'''
+Base class for all sprites. Handles simple collision and updating position.
+
+One weird nuance is that the pygame Rect can only store ints. So external
+x and y coordinates are defined to handle smooth subpixel movement. But the
+coordinates should be accessed from the rect field.
+'''
 class Creature(pygame.sprite.Sprite):
 
-	def __init__(self, position, width, height, color):
+	def __init__(self, position, dimensions, color):
 		pygame.sprite.Sprite.__init__(self)
 		self.x, self.y = position
 		self.color = color
 		self.y_velocity, self.x_velocity = 0, 0
-		self.rect = pygame.Rect(position, (float(width), float(height)))
+		self.rect = pygame.Rect(position, dimensions)
 
-	def update_x(self, elapsed_time):
+	'''
+	Called once per frame. Clients can override to manage passing time
+	'''
+	def update(self, elapsed_time, map):
+		self._update_x(elapsed_time)
+		collisions = [wall for wall in map.nearby_walls(self.rect)]
+		for wall in collisions:
+			if wall.collide(self.rect):
+				self._collide_x(wall)
+				self.interact_with(wall)
+
+		self._update_y(elapsed_time)
+
+		collisions = [wall for wall in map.nearby_walls(self.rect)]
+		for wall in collisions:
+			if wall.collide(self.rect):
+				self._collide_y(wall)
+				self.interact_with(wall)
+	'''
+	Interaction with the given wall. Override to define special functionality
+	'''
+	def interact_with(self, wall):
+		pass
+				
+	def _update_x(self, elapsed_time):
 		self.x += self.x_velocity * elapsed_time
 		self.rect.x = self.x
 
-	def update_y(self, elapsed_time):
+	def _update_y(self, elapsed_time):
 		self.y += self.y_velocity * elapsed_time
 		self.rect.y = self.y
 
-	def collide_x(self, wall):
-		if wall.color == SHRINK:
-			self.shrink()
-		elif wall.color == GROW:
-			self.grow()
-		elif wall.color == LEDGE:
-			return
+	def _collide_x(self, wall):
 		# Wall is normal ground
-		collision = wall.rect
-		if self.x_velocity < 0: # Moving left
-			self.x = collision.right
-		elif self.x_velocity > 0: # Moving right
-			self.x = collision.left - self.rect.width
-		self.rect.x = self.x
+		if wall.color != LEDGE:
+			collision = wall.rect
+			if self.x_velocity < 0: # Moving left
+				self.x = collision.right
+			elif self.x_velocity > 0: # Moving right
+				self.x = collision.left - self.rect.width
+			self.rect.x = self.x
 
-	def collide_y(self, wall):
+	def _collide_y(self, wall):
 		if wall.color == LEDGE:
 			if self.y_velocity > 0 and self.rect.bottom - wall.rect.top <= LEDGE_HEIGHT:
 				self.y = wall.rect.y - self.rect.height
 				self.y_velocity = 0	
 		else:
-			if wall.color == SHRINK:
-				self.shrink()
-			elif wall.color == GROW:
-				self.grow()
 			collision = wall.rect
 			if self.y_velocity > 0:
 				self.y = collision.y - self.rect.height
@@ -56,31 +78,39 @@ class Creature(pygame.sprite.Sprite):
 		self.rect.y = self.y
 
 
+''' 
+Simple bullet. Shoots in the given direction, until it hits a wall
+'''
 class Bullet(Creature):
 	MAX_SPEED = 0.5
+	LIFESPAN = 5000
+	DIMENSIONS = (5, 2)
+	COLOR = (0, 0, 0)
+
 	def __init__(self, position, velocity):
-		Creature.__init__(self, position, 5, 2, (0, 0, 0))
+		Creature.__init__(self, position, Bullet.DIMENSIONS, Bullet.COLOR)
 		self.x_velocity, self.y_velocity = velocity
 		self.time = 0
 
-	def update_x(self, el):
-		self.time += el
-		if self.time > 5000:
+	def update(self, elapsed_time, map):
+		self.time += elapsed_time
+		if self.time > Bullet.LIFESPAN:
 			self.kill()
-		Creature.update_x(self, el)
+		Creature.update(self, elapsed_time, map)
 
-	def collide_x(self, wall):
+	def interact_with(self, wall):
 		self.y_velocity, self.x_velocity = 0, 0
 
-	def collide_y(self, wall):
-		self.y_velocity, self.x_velocity = 0, 0
-
-
+'''
+The player! Our hero. We love him so
+'''
 class Player(Creature):
 	MAX_SPEED = 0.3
+	COLOR = (77, 204, 77)
+	DIMENSIONS = (15, 20)
 
 	def __init__(self, position):
-		Creature.__init__(self, position, 15, 20, (77, 204, 77))
+		Creature.__init__(self, position, Player.DIMENSIONS, Player.COLOR)
 		self.health = 100
 
 	def jump(self):
@@ -94,9 +124,15 @@ class Player(Creature):
 		self.color = (255, 255, 0)
 		self.rect.height, self.rect.width = (100, 50)
 
-	def update_y(self, elapsed_time):
+	def interact_with(self, wall):
+		if wall.color == SHRINK:
+			self.shrink()
+		elif wall.color == GROW:
+			self.grow()
+
+	def update(self, elapsed_time, map):
 		self.y_velocity += GRAVITY * elapsed_time
-		Creature.update_y(self, elapsed_time)
+		Creature.update(self, elapsed_time, map)
 
 	def move_left(self):
 		self.x_velocity = -Player.MAX_SPEED
@@ -120,16 +156,17 @@ class Player(Creature):
 
 
 class Goomba(Creature):
-
 	MAX_SPEED = 0.1
+	DIMENSIONS = (BLOCK_SIZE, BLOCK_SIZE)
+	COLOR = (76, 0, 150)
 
 	def __init__(self, position):
-		Creature.__init__(self, position, BLOCK_SIZE, BLOCK_SIZE, (76, 0, 150))
+		Creature.__init__(self, position, Goomba.DIMENSIONS, Goomba.COLOR)
 		self.move_left()
 
-	def update_y(self, elapsed_time):
+	def update(self, elapsed_time, map):
 		self.y_velocity += GRAVITY * elapsed_time
-		Creature.update_y(self, elapsed_time)
+		Creature.update(self, elapsed_time, map)
 
 	def stop_x(self):
 		self.x_velocity = -self.x_velocity
@@ -140,6 +177,6 @@ class Goomba(Creature):
 	def move_right(self):
 		self.x_velocity = Goomba.MAX_SPEED
 
-	def collide_x(self, wall):
-		Creature.collide_x(self, wall)
-		self.x_velocity = -self.x_velocity
+	def interact_with(self, wall):
+		if self.y_velocity != 0:
+			self.x_velocity = -self.x_velocity

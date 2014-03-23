@@ -71,18 +71,8 @@ def main():
 
 		# Update all creatures
 		for creature in all_sprites:
-			creature.update_x(elapsed_time)
-			collisions = [wall for wall in map.nearby_walls(creature.rect)]
-			for wall in collisions:
-				if wall.collide(creature.rect):
-					creature.collide_x(wall)
-
-			creature.update_y(elapsed_time)
-
-			collisions = [wall for wall in map.nearby_walls(creature.rect)]
-			for wall in collisions:
-				if wall.collide(creature.rect):
-					creature.collide_y(wall)
+			creature.update(elapsed_time, map)
+			
 
 		collided_enemies = pygame.sprite.spritecollide(player, goombas, False) 
 		for enemy in collided_enemies:
