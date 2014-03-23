@@ -12,7 +12,7 @@ def main():
 
 	map = Map('map.db')
 	player = Player(map.start_position)
-
+	particles = pygame.sprite.Group([])
 	goombas = pygame.sprite.Group(map.enemies)
 	all_sprites = pygame.sprite.Group(map.enemies + [player])
 
@@ -51,14 +51,21 @@ def main():
 					right_down = False
 			if event.type == MOUSEBUTTONDOWN:
 				pos = pygame.mouse.get_pos()
-				x, y = int(pos[0] + screen_x) / BLOCK_SIZE, int(pos[1] + screen_y) / BLOCK_SIZE
-				tile = map.grid[y][x]
-				if event.button == 1 and tile.color == LAND:
-					map.walls.remove(tile.rect)
-					tile.color = SKY
-				elif event.button == 3 and tile.color == SKY:
-					map.walls.append(tile)
-					tile.color = LAND
+				bullet = player.shoot((pos[0] + screen_x, pos[1] + screen_y))
+				particles.add(bullet)
+				all_sprites.add(bullet)
+				# TODO: Add an inventory so we don't have to disable this entirely.
+				# Add or remove land blocks from the selected square
+				#
+				# pos = pygame.mouse.get_pos()
+				# x, y = int(pos[0] + screen_x) / BLOCK_SIZE, int(pos[1] + screen_y) / BLOCK_SIZE
+				# tile = map.grid[y][x]
+				# if event.button == 1 and tile.color == LAND:
+				# 	map.walls.remove(tile.rect)
+				# 	tile.color = SKY
+				# elif event.button == 3 and tile.color == SKY:
+				# 	map.walls.append(tile)
+				# 	tile.color = LAND
 
 		elapsed_time = clock.tick()
 
@@ -70,7 +77,6 @@ def main():
 				if wall.collide(creature.rect):
 					creature.collide_x(wall)
 
-			creature.y_velocity += GRAVITY * elapsed_time
 			creature.update_y(elapsed_time)
 
 			collisions = [wall for wall in map.nearby_walls(creature.rect)]
@@ -81,6 +87,8 @@ def main():
 		collided_enemies = pygame.sprite.spritecollide(player, goombas, False) 
 		for enemy in collided_enemies:
 			player.damage(10)
+
+		shot_enemies = pygame.sprite.groupcollide(goombas, particles, True, True) # KILL EM ALL
 
 		# Position screen
 		screen_x, screen_y = max(player.rect.x - 250, 0), max(player.rect.y - 250, 0)
@@ -95,7 +103,7 @@ def main():
 
 		# Draw health bar
 		pygame.draw.rect(screen, (250, 0, 0), pygame.Rect(screen_width - 100, 5, player.health, 20), 0)
-		# Draw enemies
+		# Draw sprites (Creatures, bullets, etc)
 		for creature in all_sprites:
 			pygame.draw.rect(screen, creature.color, creature.rect.move(-screen_x, -screen_y), 0)
 

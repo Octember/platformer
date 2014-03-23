@@ -1,8 +1,7 @@
 import pygame
+import math
 from pygame.locals import *
 from globals import *
-
-
 
 class Creature(pygame.sprite.Sprite):
 
@@ -57,8 +56,27 @@ class Creature(pygame.sprite.Sprite):
 		self.rect.y = self.y
 
 
-class Player(Creature):
+class Bullet(Creature):
+	MAX_SPEED = 0.5
+	def __init__(self, position, velocity):
+		Creature.__init__(self, position, 5, 2, (0, 0, 0))
+		self.x_velocity, self.y_velocity = velocity
+		self.time = 0
 
+	def update_x(self, el):
+		self.time += el
+		if self.time > 5000:
+			self.kill()
+		Creature.update_x(self, el)
+
+	def collide_x(self, wall):
+		self.y_velocity, self.x_velocity = 0, 0
+
+	def collide_y(self, wall):
+		self.y_velocity, self.x_velocity = 0, 0
+
+
+class Player(Creature):
 	MAX_SPEED = 0.3
 
 	def __init__(self, position):
@@ -76,6 +94,10 @@ class Player(Creature):
 		self.color = (255, 255, 0)
 		self.rect.height, self.rect.width = (100, 50)
 
+	def update_y(self, elapsed_time):
+		self.y_velocity += GRAVITY * elapsed_time
+		Creature.update_y(self, elapsed_time)
+
 	def move_left(self):
 		self.x_velocity = -Player.MAX_SPEED
 
@@ -84,6 +106,11 @@ class Player(Creature):
 
 	def stop_x(self):
 		self.x_velocity = 0
+
+	def shoot(self, position):
+		diff_x, diff_y = position[0] - self.rect.centerx, position[1] - self.rect.centery
+		magnitude = math.sqrt(diff_x * diff_x + diff_y * diff_y)
+		return Bullet(self.rect.center, (diff_x / magnitude, diff_y / magnitude))
 
 	def damage(self, damage):
 		self.health -= damage
@@ -99,6 +126,10 @@ class Goomba(Creature):
 	def __init__(self, position):
 		Creature.__init__(self, position, BLOCK_SIZE, BLOCK_SIZE, (76, 0, 150))
 		self.move_left()
+
+	def update_y(self, elapsed_time):
+		self.y_velocity += GRAVITY * elapsed_time
+		Creature.update_y(self, elapsed_time)
 
 	def stop_x(self):
 		self.x_velocity = -self.x_velocity
