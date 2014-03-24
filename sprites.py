@@ -1,5 +1,6 @@
 import pygame
-import math
+from math import sqrt
+from random import randint
 from pygame.locals import *
 from globals import *
 
@@ -10,7 +11,7 @@ One weird nuance is that the pygame Rect can only store ints. So external
 x and y coordinates are defined to handle smooth subpixel movement. But the
 coordinates should be accessed from the rect field.
 '''
-class Creature(pygame.sprite.Sprite):
+class Sprite(pygame.sprite.Sprite):
 
 	def __init__(self, position, dimensions, color):
 		pygame.sprite.Sprite.__init__(self)
@@ -81,14 +82,14 @@ class Creature(pygame.sprite.Sprite):
 ''' 
 Simple bullet. Shoots in the given direction, until it hits a wall
 '''
-class Bullet(Creature):
+class Bullet(Sprite):
 	MAX_SPEED = 0.5
 	LIFESPAN = 5000
 	DIMENSIONS = (5, 2)
 	COLOR = (0, 0, 0)
 
 	def __init__(self, position, velocity):
-		Creature.__init__(self, position, Bullet.DIMENSIONS, Bullet.COLOR)
+		Sprite.__init__(self, position, Bullet.DIMENSIONS, Bullet.COLOR)
 		self.x_velocity, self.y_velocity = velocity
 		self.time = 0
 
@@ -96,10 +97,37 @@ class Bullet(Creature):
 		self.time += elapsed_time
 		if self.time > Bullet.LIFESPAN:
 			self.kill()
-		Creature.update(self, elapsed_time, map)
+		Sprite.update(self, elapsed_time, map)
 
 	def interact_with(self, wall):
 		self.y_velocity, self.x_velocity = 0, 0
+
+
+
+class Creature(Sprite):
+
+	def __init__(self, position, dimensions, color):
+		Sprite.__init__(self, position, dimensions, color)
+		self.jumping = False
+		self.health = 100
+
+	def damage(self, damage):
+		self.health -= damage
+
+	def update(self, elapsed_time, map):
+		self.y_velocity += GRAVITY * elapsed_time
+		Sprite.update(self, elapsed_time, map)
+
+	def jump(self, speed):
+		if not self.jumping:
+			self.y_velocity = -speed
+			self.jumping = True
+
+	def _collide_y(self, wall):
+		if self.y_velocity > 0:
+			self.jumping = False
+		Sprite._collide_y(self, wall)
+
 
 '''
 The player! Our hero. We love him so
@@ -114,7 +142,7 @@ class Player(Creature):
 		self.health = 100
 
 	def jump(self):
-		self.y_velocity = -0.5
+		Creature.jump(self, Player.MAX_SPEED)
 
 	def shrink(self):
 		self.color = (0, 0, 0)
@@ -130,10 +158,6 @@ class Player(Creature):
 		elif wall.color == GROW:
 			self.grow()
 
-	def update(self, elapsed_time, map):
-		self.y_velocity += GRAVITY * elapsed_time
-		Creature.update(self, elapsed_time, map)
-
 	def move_left(self):
 		self.x_velocity = -Player.MAX_SPEED
 
@@ -144,12 +168,10 @@ class Player(Creature):
 		self.x_velocity = 0
 
 	def shoot(self, position):
-		diff_x, diff_y = position[0] - self.rect.centerx, position[1] - self.rect.centery
-		magnitude = math.sqrt(diff_x * diff_x + diff_y * diff_y)
+		diff_x  = position[0] - self.rect.centerx
+		diff_y = position[1] - self.rect.centery
+		magnitude = sqrt(diff_x * diff_x + diff_y * diff_y)
 		return Bullet(self.rect.center, (diff_x / magnitude, diff_y / magnitude))
-
-	def damage(self, damage):
-		self.health -= damage
 
 	def alive(self):
 		return self.health > 0
@@ -161,11 +183,15 @@ class Goomba(Creature):
 	COLOR = (76, 0, 150)
 
 	def __init__(self, position):
-		Creature.__init__(self, position, Goomba.DIMENSIONS, Goomba.COLOR)
+		Sprite.__init__(self, position, Goomba.DIMENSIONS, Goomba.COLOR)
 		self.move_left()
+		self.time = randint(0, 3000)
 
 	def update(self, elapsed_time, map):
-		self.y_velocity += GRAVITY * elapsed_time
+		self.time -= elapsed_time
+		if self.time <= 0:
+			self.time = randint(0, 3000)
+			self.jump(Goomba.MAX_SPEED)
 		Creature.update(self, elapsed_time, map)
 
 	def stop_x(self):

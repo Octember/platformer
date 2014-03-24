@@ -55,6 +55,7 @@ def main():
 				particles.add(bullet)
 				all_sprites.add(bullet)
 				# TODO: Add an inventory so we don't have to disable this entirely.
+				#
 				# Add or remove land blocks from the selected square
 				#
 				# pos = pygame.mouse.get_pos()
@@ -69,15 +70,16 @@ def main():
 
 		elapsed_time = clock.tick()
 
-		# Update all creatures
-		for creature in all_sprites:
-			creature.update(elapsed_time, map)
-			
-
+		# Update all creatures. O(v*N), N: number of sprites, v: size of sprite
+		for sprite in all_sprites:
+			sprite.update(elapsed_time, map)
+		
+		# O(N^2)
 		collided_enemies = pygame.sprite.spritecollide(player, goombas, False) 
 		for enemy in collided_enemies:
 			player.damage(10)
 
+		# O(N^2)
 		shot_enemies = pygame.sprite.groupcollide(goombas, particles, True, True) # KILL EM ALL
 
 		# Position screen
@@ -94,8 +96,8 @@ def main():
 		# Draw health bar
 		pygame.draw.rect(screen, (250, 0, 0), pygame.Rect(screen_width - 100, 5, player.health, 20), 0)
 		# Draw sprites (Creatures, bullets, etc)
-		for creature in all_sprites:
-			pygame.draw.rect(screen, creature.color, creature.rect.move(-screen_x, -screen_y), 0)
+		for sprites in all_sprites:
+			pygame.draw.rect(screen, sprites.color, sprites.rect.move(-screen_x, -screen_y), 0)
 
 		# Draw FPS
 		text = font.render('FPS: ' + str(1000 / elapsed_time), True, (0, 0, 0), SKY)
