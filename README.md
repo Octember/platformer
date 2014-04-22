@@ -11,16 +11,20 @@ Instalation & requirements
 
 * Requires PyGame
 * Download the source
-    ```shell
+
+    ```
         git clone https://github.com/Data5tream/platformer.git
     ```
+    
 * Run the platformer.py script within the platformer folder
-    ```shell
-        ./platformer.py
+
+    ```
+    ./platformer.py
     ```
     or
-    ```shell
-        python platformer.py
+    
+    ```
+    python platformer.py
     ```
     
 Changelog (differences to original project)

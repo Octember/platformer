@@ -71,6 +71,7 @@ def main():
         elapsed_time = clock.tick()
         if player.health < 0:
             #Player is death
+            pygame.quit()
             print "You have died!"
             sys.exit
 
@@ -79,8 +80,9 @@ def main():
             sprite.update(elapsed_time, map)
 
         # O(N^2)
-        collided_enemies = pygame.sprite.spritecollide(player, goombas, False)
+        collided_enemies = pygame.sprite.spritecollide(player, goombas, True)
         for enemy in collided_enemies:
+            print "10 Damge recieved from"+str(enemy)
             player.damage(10)
 
         # O(N^2)
