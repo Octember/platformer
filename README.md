@@ -21,20 +21,20 @@ Installation & requirements
 
 * Download the source
 
-    ```
-    git clone https://github.com/Data5tream/platformer.git
-    ```
+```shell
+git clone https://github.com/Data5tream/platformer.git
+```
     
 * Run the platformer.py script within the platformer folder
 
-    ```
-    ./platformer.py
-    ```
+```shell
+./platformer.py
+```
     or
     
-    ```
-    python platformer.py
-    ```
+```shell
+python platformer.py
+```
 
 How to play
 ---
@@ -46,20 +46,20 @@ How to play
 Configuration
 ---
 	
-In platformer.py lines 11 & 12:
+* In platformer.py lines 11 & 12:
 
-    ```
-    screen_width = *Your desired screen width*
-    screen_height = *Your desired screen height*
-    ```
+```python
+screen_width = *Your desired screen width*
+screen_height = *Your desired screen height*
+```
 
-In globals.py line 16:
+* In globals.py line 16:
 
-    ```
-    GRAVITY = *desired gravity*
-    ```
+```python
+GRAVITY = *desired gravity*
+```
     
-    0.001 is normal Gravity, 0.0001 is funny to play. Over 0.002, jumping is almost imposible.
+0.001 is normal Gravity, 0.0001 is funny to play. Over 0.002, jumping is almost imposible.
     
 Changelog (diferences to original project)
 ---
