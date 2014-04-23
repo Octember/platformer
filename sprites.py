@@ -85,10 +85,10 @@ class Bullet(Sprite):
     MAX_SPEED = 0.5
     LIFESPAN = 5000
     DIMENSIONS = (5, 2)
-    COLOR = (0, 0, 0)
+    type = "Bullet"
 
     def __init__(self, position, velocity):
-        Sprite.__init__(self, position, Bullet.DIMENSIONS, Bullet.COLOR)
+        Sprite.__init__(self, position, Bullet.DIMENSIONS, Bullet.type)
         self.x_velocity, self.y_velocity = velocity
         self.time = 0
 
@@ -103,8 +103,9 @@ class Bullet(Sprite):
 
 class Creature(Sprite):
 
-    def __init__(self, position, dimensions, color):
-        Sprite.__init__(self, position, dimensions, color)
+    def __init__(self, position, dimensions, material):
+        material = pygame.image.load("img/"+material+".png")
+        Sprite.__init__(self, position, dimensions, material)
         self.jumping = False
         self.health = 100
 
@@ -131,11 +132,11 @@ The player! Our hero. We love him so
 '''
 class Player(Creature):
     MAX_SPEED = 0.3
-    COLOR = (77, 204, 77)
+    type = "Player"
     DIMENSIONS = (15, 20)
 
     def __init__(self, position):
-        Creature.__init__(self, position, Player.DIMENSIONS, Player.COLOR)
+        Creature.__init__(self, position, Player.DIMENSIONS, Player.type)
         self.health = 100
 
     def jump(self):
@@ -176,10 +177,10 @@ class Player(Creature):
 class Goomba(Creature):
     MAX_SPEED = 0.1
     DIMENSIONS = (BLOCK_SIZE, BLOCK_SIZE)
-    COLOR = (76, 0, 150)
+    type = "Goomba"
 
     def __init__(self, position):
-        Sprite.__init__(self, position, Goomba.DIMENSIONS, Goomba.COLOR)
+        Sprite.__init__(self, position, Goomba.DIMENSIONS, Goomba.type)
         self.move_left()
         self.time = randint(0, 3000)
 
@@ -187,7 +188,7 @@ class Goomba(Creature):
         self.time -= elapsed_time
         if self.time <= 0:
             self.time = randint(0, 3000)
-            Creature.jump(self, Goomba.MAX_SPEED)
+            self.jump()
         Creature.update(self, elapsed_time, map)
     def stop_x(self):
         self.x_velocity = -self.x_velocity
@@ -197,6 +198,9 @@ class Goomba(Creature):
 
     def move_right(self):
         self.x_velocity = Goomba.MAX_SPEED
+
+    def jump(self):
+        Creature.jump(self, Goomba.MAX_SPEED)
 
     def interact_with(self, wall):
         if self.y_velocity != 0:

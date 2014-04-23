@@ -12,17 +12,22 @@ screen_width = 1000
 screen_height = 500
 
 # Load the graphics
+# BLOCKS #
 landblock = pygame.image.load(LAND)
 skyblock = pygame.image.load(SKY)
 shrinkblock = pygame.image.load(SHRINK)
 growblock = pygame.image.load(GROW)
 ledgeblock = pygame.image.load(LEDGE)
+# SPRITES #
+goombamat = pygame.image.load(GOOMBA)
+playermat = pygame.image.load(PLAYER)
+bulletmat = pygame.image.load(BULLET)
 
 def main():
     # Initialize
     pygame.init()
 
-    map = Map('map2.db') #Select used map
+    map = Map('map2.db') # Select used map
     player = Player(map.start_position)
     particles = pygame.sprite.Group([])
     goombas = pygame.sprite.Group(map.enemies)
@@ -78,10 +83,18 @@ def main():
                     tile.color = LAND
                 '''
         elapsed_time = clock.tick()
+
+        # If player's healty drops beyond 0, end the game
         if player.health <= 0:
-            #Player is death
+            # Player is death
             pygame.quit()
-            print "You have died!"
+            print "[-] You have died!"
+            sys.exit()
+
+        # If all enemies were killed, quit game and display win message
+        if len(goombas) == 0:
+            pygame.quit()
+            print "[+] You have won!"
             sys.exit()
 
         # Update all creatures. O(v*N), N: number of sprites, v: size of sprite
@@ -91,8 +104,9 @@ def main():
         # O(N^2)
         collided_enemies = pygame.sprite.spritecollide(player, goombas, True)
         for enemy in collided_enemies:
-            print "[-] 10 Damage recieved from "+str(enemy)
             player.damage(10)
+            # Display damage and health message
+            print "[-] 10 Damage recieved from "+str(enemy)
             print "[*] Player has now "+str(player.health)+" life points"
 
         # O(N^2)
@@ -107,6 +121,7 @@ def main():
         grid_x, grid_y = int(screen_x) / BLOCK_SIZE, int(screen_y) / BLOCK_SIZE
         for row in map.grid[grid_y : grid_y + screen_rows + 1]:
             for square in row[grid_x : grid_x + screen_cols + 1]:
+                # Select the correct block and blit it to the screen
                 if square.type == LAND:
                     screen.blit(landblock, square.rect.move(-screen_x, -screen_y))
                 elif square.type == SKY:
@@ -122,12 +137,18 @@ def main():
         pygame.draw.rect(screen, (250, 0, 0), pygame.Rect(screen_width - 100, 5, player.health, 20), 0)
         # Draw sprites (Creatures, bullets, etc)
         for sprites in all_sprites:
-            pygame.draw.rect(screen, sprites.color, sprites.rect.move(-screen_x, -screen_y), 0)
+            if sprites.type == "Goomba":
+                screen.blit(goombamat, sprites.rect.move(-screen_x, -screen_y))
+            elif sprites.type == "Player":
+                screen.blit(playermat, sprites.rect.move(-screen_x, -screen_y))
+            elif sprites.type == "Bullet":
+                screen.blit(bulletmat, sprites.rect.move(-screen_x, -screen_y))
 
         # Draw FPS
         text = font.render('FPS: ' + str(1000 / elapsed_time), True, (0, 0, 0), (250, 250, 250))
         screen.blit(text, text.get_rect())
 
+        # Update the screen
         pygame.display.update()
 
 if __name__ == '__main__':
