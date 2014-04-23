@@ -6,22 +6,24 @@ from sprites import Player, Goomba
 from world import Map
 from globals import *
 
+version = "v0.1-beta"
+# EDIT HERE TO FIT YOUR NEEDS #
+screen_width = 1000
+screen_height = 500
+
 def main():
     # Initialize
     pygame.init()
 
-    map = Map('map.db')
+    map = Map('map2.db') #Select used map
     player = Player(map.start_position)
     particles = pygame.sprite.Group([])
     goombas = pygame.sprite.Group(map.enemies)
     all_sprites = pygame.sprite.Group(map.enemies + [player])
 
-    # Number of screen_rows and cols visible on the screen at any given point
-
-    screen_width, screen_height = 500, 500
     screen_cols, screen_rows = screen_width / BLOCK_SIZE, screen_height / BLOCK_SIZE
     screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption('Zoom Man 1.0')
+    pygame.display.set_caption('Platformer '+version)
 
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 30)
@@ -69,11 +71,11 @@ def main():
                     tile.color = LAND
                 '''
         elapsed_time = clock.tick()
-        if player.health < 0:
+        if player.health <= 0:
             #Player is death
             pygame.quit()
             print "You have died!"
-            sys.exit
+            sys.exit()
 
         # Update all creatures. O(v*N), N: number of sprites, v: size of sprite
         for sprite in all_sprites:
@@ -82,8 +84,9 @@ def main():
         # O(N^2)
         collided_enemies = pygame.sprite.spritecollide(player, goombas, True)
         for enemy in collided_enemies:
-            print "10 Damge recieved from"+str(enemy)
+            print "[-] 10 Damage recieved from "+str(enemy)
             player.damage(10)
+            print "[*] Player has now "+str(player.health)+" life points"
 
         # O(N^2)
         shot_enemies = pygame.sprite.groupcollide(goombas, particles, True, True) # KILL EM ALL
