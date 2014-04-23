@@ -54,7 +54,7 @@ class Sprite(pygame.sprite.Sprite):
 
     def _collide_x(self, wall):
         # Wall is normal ground
-        if wall.color != LEDGE:
+        if wall.type != LEDGE:
             collision = wall.rect
             if self.x_velocity < 0: # Moving left
                 self.x = collision.right
@@ -63,7 +63,7 @@ class Sprite(pygame.sprite.Sprite):
             self.rect.x = self.x
 
     def _collide_y(self, wall):
-        if wall.color == LEDGE:
+        if wall.type == LEDGE:
             if self.y_velocity > 0 and self.rect.bottom - wall.rect.top <= LEDGE_HEIGHT:
                 self.y = wall.rect.y - self.rect.height
                 self.y_velocity = 0
@@ -150,9 +150,9 @@ class Player(Creature):
         self.rect.height, self.rect.width = (100, 50)
 
     def interact_with(self, wall):
-        if wall.color == SHRINK:
+        if wall.type == SHRINK:
             self.shrink()
-        elif wall.color == GROW:
+        elif wall.type == GROW:
             self.grow()
 
     def move_left(self):
@@ -187,7 +187,7 @@ class Goomba(Creature):
         self.time -= elapsed_time
         if self.time <= 0:
             self.time = randint(0, 3000)
-            self.jump()
+            Creature.jump(self, Goomba.MAX_SPEED)
         Creature.update(self, elapsed_time, map)
     def stop_x(self):
         self.x_velocity = -self.x_velocity
@@ -197,9 +197,6 @@ class Goomba(Creature):
 
     def move_right(self):
         self.x_velocity = Goomba.MAX_SPEED
-
-    def jump(self):
-         Creature.jump(self, Goomba.MAX_SPEED)
 
     def interact_with(self, wall):
         if self.y_velocity != 0:

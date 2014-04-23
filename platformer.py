@@ -11,6 +11,13 @@ version = "v0.1-beta"
 screen_width = 1000
 screen_height = 500
 
+# Load the graphics
+landblock = pygame.image.load(LAND)
+skyblock = pygame.image.load(SKY)
+shrinkblock = pygame.image.load(SHRINK)
+growblock = pygame.image.load(GROW)
+ledgeblock = pygame.image.load(LEDGE)
+
 def main():
     # Initialize
     pygame.init()
@@ -100,7 +107,16 @@ def main():
         grid_x, grid_y = int(screen_x) / BLOCK_SIZE, int(screen_y) / BLOCK_SIZE
         for row in map.grid[grid_y : grid_y + screen_rows + 1]:
             for square in row[grid_x : grid_x + screen_cols + 1]:
-                screen.fill(square.color, square.rect.move(-screen_x, -screen_y))
+                if square.type == LAND:
+                    screen.blit(landblock, square.rect.move(-screen_x, -screen_y))
+                elif square.type == SKY:
+                    screen.blit(skyblock, square.rect.move(-screen_x, -screen_y))
+                elif square.type == SHRINK:
+                    screen.blit(shrinkblock, square.rect.move(-screen_x, -screen_y))
+                elif square.type == GROW:
+                    screen.blit(growblock, square.rect.move(-screen_x, -screen_y))
+                elif square.type == LEDGE:
+                    screen.blit(ledgeblock, square.rect.move(-screen_x, -screen_y))
 
         # Draw health bar
         pygame.draw.rect(screen, (250, 0, 0), pygame.Rect(screen_width - 100, 5, player.health, 20), 0)
@@ -109,10 +125,10 @@ def main():
             pygame.draw.rect(screen, sprites.color, sprites.rect.move(-screen_x, -screen_y), 0)
 
         # Draw FPS
-        text = font.render('FPS: ' + str(1000 / elapsed_time), True, (0, 0, 0), SKY)
+        text = font.render('FPS: ' + str(1000 / elapsed_time), True, (0, 0, 0), (250, 250, 250))
         screen.blit(text, text.get_rect())
 
-        pygame.display.flip()
+        pygame.display.update()
 
 if __name__ == '__main__':
     main()
