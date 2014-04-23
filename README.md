@@ -25,19 +25,34 @@ Installation & requirements
 git clone https://github.com/Data5tream/platformer.git
 ```
     
+How to play
+---
+
 * Run the platformer.py script within the platformer folder
 
 ```shell
 ./platformer.py
 ```
-    or
+or
     
 ```shell
 python platformer.py
 ```
 
-How to play
----
+*Running the script this way, it will automatically load the map 'map2.db'.*
+Running the game with the first map:
+
+```shell
+./platformer.py --map map
+```
+
+or
+
+```shell
+python platformer.py --map map
+```
+
+**CONTROLS**
 * Move with WASD
 * Jump with space
 * Shoot bullets with the mouse
@@ -59,13 +74,14 @@ screen_height = *Your desired screen height*
 GRAVITY = *desired gravity*
 ```
     
-0.001 is normal Gravity, 0.0001 is funny to play. Over 0.002, jumping is almost imposible.
+0.001 is normal Gravity, 0.0001 is funny to play. Over 0.002, jumping is almost impossible.
     
-Changelog (diferences to original project)
+Changelog (differences to original project)
 ---
 
 * Player can now die (Game ends when player's health goes beyond 0)
 * Player can now win (Game ends when all enemies are dead)
 * Replaced taps with spaces in platformer.py and spite.py
 * New bigger map for testing
-* **GRAPICS**
+* Added command line arguments
+* **GRAPHICS**

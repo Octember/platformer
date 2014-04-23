@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import pygame, sys
+import pygame, sys, argparse
 from pygame.locals import *
 from sprites import Player, Goomba
 from world import Map
@@ -23,11 +23,23 @@ goombamat = pygame.image.load(GOOMBA)
 playermat = pygame.image.load(PLAYER)
 bulletmat = pygame.image.load(BULLET)
 
+def argparser():
+    parser = argparse.ArgumentParser(description="Platformer - A simple RPC", epilog="Written by Data5tream and Octember", version="v0.1-beta")
+    parser.add_argument("-m", "--map", help="Use to select map file (Use map or map2) ", action="store")
+    args = parser.parse_args()
+    global selectedmap
+    if args.map == 'map':
+        selectedmap = 'map.db'
+    elif args.map == 'map2':
+        selectedmap = 'map2.db'
+    else:
+        selectedmap = 'map2.db'
+
 def main():
     # Initialize
     pygame.init()
 
-    map = Map('map2.db') # Select used map
+    map = Map(selectedmap)
     player = Player(map.start_position)
     particles = pygame.sprite.Group([])
     goombas = pygame.sprite.Group(map.enemies)
@@ -152,5 +164,6 @@ def main():
         pygame.display.update()
 
 if __name__ == '__main__':
+    argparser()
     main()
 
