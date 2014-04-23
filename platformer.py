@@ -10,6 +10,7 @@ version = "v0.1-beta"
 # EDIT HERE TO FIT YOUR NEEDS #
 screen_width = 1000
 screen_height = 500
+showFPS = 1
 
 # Load the graphics
 # BLOCKS #
@@ -52,34 +53,49 @@ def main():
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 30)
 
+    invopen = 0 # True if the inventory is open, false if not.
+
     # Event loop
     right_down, left_down = False, False
 
     while 1:
         for event in pygame.event.get():
-            if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
-                return
-            if event.type == KEYDOWN:
-                if event.key in (K_LEFT, K_a):
-                    left_down = True
-                    player.move_left()
-                if event.key in (K_RIGHT, K_d):
-                    right_down = True
-                    player.move_right()
-                if event.key in (K_SPACE, K_w):
-                    player.jump()
-            if event.type == KEYUP:
-                if event.key in (K_LEFT, K_a):
-                    player.move_right() if right_down else player.stop_x()
-                    left_down = False
-                elif event.key in (K_RIGHT, K_d):
-                    player.move_left() if left_down else player.stop_x()
-                    right_down = False
-            if event.type == MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                bullet = player.shoot((pos[0] + screen_x, pos[1] + screen_y))
-                particles.add(bullet)
-                all_sprites.add(bullet)
+            if invopen == 0: # If inventory isn't opened do this:
+                if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE: # Quit the game
+                    return
+                if event.type == KEYDOWN: # Handle pushed keys
+                    if event.key in (K_LEFT, K_a):
+                        left_down = True
+                        player.move_left()
+                    if event.key in (K_RIGHT, K_d):
+                        right_down = True
+                        player.move_right()
+                    if event.key in (K_SPACE, K_w):
+                        player.jump()
+                    if event.key == K_i:
+                        invopen = 1
+                if event.type == KEYUP: # Handle released keys
+                    if event.key in (K_LEFT, K_a):
+                        player.move_right() if right_down else player.stop_x()
+                        left_down = False
+                    elif event.key in (K_RIGHT, K_d):
+                        player.move_left() if left_down else player.stop_x()
+                        right_down = False
+                if event.type == MOUSEBUTTONDOWN: # Handle mouse clicks
+                    pos = pygame.mouse.get_pos()
+                    bullet = player.shoot((pos[0] + screen_x, pos[1] + screen_y))
+                    particles.add(bullet)
+                    all_sprites.add(bullet)
+            elif invopen== 1: # If inventory is open do this:
+                if event.type == QUIT:
+                    return
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE or event.key == K_i:
+                        invopen = 0
+                if event.type == MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    if pos[0] in range(invframe.right-30, invframe.right) and pos[1] in range(invframe.top, invframe.top+30):
+                        invopen = 0
                 '''
                 TODO: Add an inventory so we don't have to disable this entirely.
                 Add or remove land blocks from the selected square
@@ -144,7 +160,6 @@ def main():
                     screen.blit(growblock, square.rect.move(-screen_x, -screen_y))
                 elif square.type == LEDGE:
                     screen.blit(ledgeblock, square.rect.move(-screen_x, -screen_y))
-
         # Draw health bar
         pygame.draw.rect(screen, (250, 0, 0), pygame.Rect(screen_width - 100, 5, player.health, 20), 0)
         # Draw sprites (Creatures, bullets, etc)
@@ -155,10 +170,18 @@ def main():
                 screen.blit(playermat, sprites.rect.move(-screen_x, -screen_y))
             elif sprites.type == "Bullet":
                 screen.blit(bulletmat, sprites.rect.move(-screen_x, -screen_y))
-
-        # Draw FPS
-        text = font.render('FPS: ' + str(1000 / elapsed_time), True, (0, 0, 0), (250, 250, 250))
-        screen.blit(text, text.get_rect())
+        # Draw the inventory if necessary
+        if invopen:
+            invframe = pygame.Rect(200, 200, 400, 400)
+            invframe.center = screen_width/2, screen_height/2
+            objectframe = pygame.Rect(200, 200, 380, 200)
+            objectframe.bottomleft = invframe.left+10, invframe.bottom-10
+            pygame.draw.rect(screen, (44, 44, 44), invframe)
+            pygame.draw.rect(screen, (88, 88, 88), objectframe)
+        # Draw FPS if necessary
+        if showFPS:
+            text = font.render('FPS: ' + str(1000 / elapsed_time), True, (0, 0, 0), (250, 250, 250))
+            screen.blit(text, text.get_rect())
 
         # Update the screen
         pygame.display.update()
