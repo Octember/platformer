@@ -5,6 +5,7 @@ from pygame.locals import *
 from sprites import Player, Goomba
 from world import Map
 from globals import *
+from inventory import *
 
 version = "v0.1-beta"
 # EDIT HERE TO FIT YOUR NEEDS #
@@ -172,6 +173,7 @@ def main():
                 screen.blit(bulletmat, sprites.rect.move(-screen_x, -screen_y))
         # Draw the inventory if necessary
         if invopen:
+            print inventory.content['slot1'] #testing access to inventory
             invframe = pygame.Rect(200, 200, 400, 400)
             invframe.center = screen_width/2, screen_height/2
             objectframe = pygame.Rect(200, 200, 380, 200)
