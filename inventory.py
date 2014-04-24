@@ -4,4 +4,5 @@ from globals import *
 
 class inventory:
     content = {}
-    content['slot1'] = 'none'
+    for slot in range(30):
+        content['slot'+str(slot)] = 'none'
