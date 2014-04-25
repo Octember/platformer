@@ -22,7 +22,7 @@ Installation & requirements
 * Download the source
 
 ```shell
-git clone https://github.com/Data5tream/platformer.git
+git clone https://github.com/Octember/platformer.git
 ```
     
 How to play
