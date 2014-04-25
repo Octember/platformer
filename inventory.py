@@ -3,6 +3,6 @@ from pygame.locals import *
 from globals import *
 
 class inventory:
-    content = {}
+    content = []
     for slot in range(30):
-        content['slot'+str(slot)] = 'none'
+        content.append([slot,'itemID','stack'])

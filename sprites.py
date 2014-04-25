@@ -132,8 +132,8 @@ The player! Our hero. We love him so
 '''
 class Player(Creature):
     MAX_SPEED = 0.3
-    type = "Player"
     DIMENSIONS = (15, 20)
+    type = "Player"
 
     def __init__(self, position):
         Creature.__init__(self, position, Player.DIMENSIONS, Player.type)

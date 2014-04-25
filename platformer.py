@@ -189,6 +189,9 @@ def main():
                     objectframe.topleft = left, top
                     pygame.draw.rect(screen, (100, 100, 100), objectframe)
                     # Put something here to catch the object in slot 'slot' and display
+                    '''
+                    object = inventory.content[slot+(12*(raw-1))]
+                    '''
                     left += 30
                 left = innerframe.left+10
                 top += 30

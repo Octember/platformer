@@ -7,7 +7,6 @@ About
 ---
 Run, shoot and... freak out with the graphics!
 Right now you can't do much, so just star and sit back (if you can't code, and if you can: **contribute**!).
-*This is an unofficial fork.*
 
 Installation & requirements
 ---
@@ -22,7 +21,7 @@ Installation & requirements
 * Download the source
 
 ```shell
-git clone https://github.com/Data5tream/platformer.git
+git clone https://github.com/Octember/platformer.git
 ```
     
 How to play
@@ -75,13 +74,3 @@ GRAVITY = *desired gravity*
 ```
     
 0.001 is normal Gravity, 0.0001 is funny to play. Over 0.002, jumping is almost impossible.
-    
-Changelog (differences to original project)
----
-
-* Player can now die (Game ends when player's health goes beyond 0)
-* Player can now win (Game ends when all enemies are dead)
-* Replaced taps with spaces in platformer.py and spite.py
-* New bigger map for testing
-* Added command line arguments
-* **GRAPHICS**
