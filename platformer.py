@@ -5,12 +5,13 @@ from pygame.locals import *
 from sprites import Player, Goomba
 from world import Map
 from globals import *
+from inventory import *
 
-version = "v0.1-beta"
+version = "v0.1-alpha"
 # EDIT HERE TO FIT YOUR NEEDS #
 screen_width = 1000
 screen_height = 500
-showFPS = 1
+DEBUG = 1
 
 # Load the graphics
 # BLOCKS #
@@ -121,6 +122,7 @@ def main():
 
         # If all enemies were killed, quit game and display win message
         if len(goombas) == 0:
+            # Player has won
             pygame.quit()
             print "[+] You have won!"
             sys.exit()
@@ -134,8 +136,9 @@ def main():
         for enemy in collided_enemies:
             player.damage(10)
             # Display damage and health message
-            print "[-] 10 Damage recieved from "+str(enemy)
-            print "[*] Player has now "+str(player.health)+" life points"
+            if DEBUG:
+                print "[-] 10 Damage recieved from "+str(enemy)
+                print "[*] Player has now "+str(player.health)+" life points"
 
         # O(N^2)
         shot_enemies = pygame.sprite.groupcollide(goombas, particles, True, True) # KILL EM ALL
@@ -174,12 +177,23 @@ def main():
         if invopen:
             invframe = pygame.Rect(200, 200, 400, 400)
             invframe.center = screen_width/2, screen_height/2
-            objectframe = pygame.Rect(200, 200, 380, 200)
-            objectframe.bottomleft = invframe.left+10, invframe.bottom-10
+            innerframe = pygame.Rect(200, 200, 380, 200)
+            innerframe.bottomleft = invframe.left+10, invframe.bottom-10
             pygame.draw.rect(screen, (44, 44, 44), invframe)
-            pygame.draw.rect(screen, (88, 88, 88), objectframe)
+            pygame.draw.rect(screen, (88, 88, 88), innerframe)
+            objectframe = pygame.Rect(0, 0, 20, 20)
+            left = innerframe.left+10
+            top = innerframe.top+10
+            for raw in range(4):
+                for slot in range(12):
+                    objectframe.topleft = left, top
+                    pygame.draw.rect(screen, (100, 100, 100), objectframe)
+                    # Put something here to catch the object in slot 'slot' and display
+                    left += 30
+                left = innerframe.left+10
+                top += 30
         # Draw FPS if necessary
-        if showFPS:
+        if DEBUG:
             text = font.render('FPS: ' + str(1000 / elapsed_time), True, (0, 0, 0), (250, 250, 250))
             screen.blit(text, text.get_rect())
 
@@ -189,4 +203,3 @@ def main():
 if __name__ == '__main__':
     argparser()
     main()
-
