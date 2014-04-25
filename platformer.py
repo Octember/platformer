@@ -188,9 +188,10 @@ def main():
                 for slot in range(12):
                     objectframe.topleft = left, top
                     pygame.draw.rect(screen, (100, 100, 100), objectframe)
-                    # Put something here to catch the object in slot 'slot' and display
+                    # object[1] is the itemID, objimg is a list of loaded images
                     '''
                     object = inventory.content[slot+(12*(raw-1))]
+                    screen.blit(objimg[object[1]], objectframe)
                     '''
                     left += 30
                 left = innerframe.left+10
