@@ -72,19 +72,5 @@ screen_height = *Your desired screen height*
 ```python
 GRAVITY = *desired gravity*
 ```
-    
-<<<<<<< HEAD
-0.001 is normal Gravity, 0.0001 is funny to play. Over 0.002, jumping is almost impossible.
-=======
-0.001 is normal Gravity, 0.0001 is funny to play. Over 0.002, jumping is almost impossible.
-    
-Changelog (differences to original project)
----
 
-* Player can now die (Game ends when player's health goes beyond 0)
-* Player can now win (Game ends when all enemies are dead)
-* Replaced taps with spaces in platformer.py and spite.py
-* New bigger map for testing
-* Added command line arguments
-* **GRAPHICS**
->>>>>>> d24302faf23e206ecf4c565c16a0183f2f584cb1
+0.001 is normal Gravity, 0.0001 is funny to play. Over 0.002, jumping is almost impossible.
