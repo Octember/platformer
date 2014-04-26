@@ -7,7 +7,7 @@ from world import Map
 from globals import *
 from inventory import *
 
-version = "v0.1-alpha"
+VERSION = "v0.1-alpha"
 # EDIT HERE TO FIT YOUR NEEDS #
 screen_width = 1000
 screen_height = 500
@@ -27,7 +27,7 @@ SPRITEGRAPHICS = { 'Goomba' : pygame.image.load(GOOMBA),
             'Bullet' : pygame.image.load(BULLET) }
 
 def argparser():
-    parser = argparse.ArgumentParser(description="Platformer - A simple RPC", epilog="Written by Data5tream and Octember", version="v0.1-beta")
+    parser = argparse.ArgumentParser(description="Platformer - A simple RPG", epilog="Written by Data5tream and Octember", version="v0.1-beta")
     parser.add_argument("-m", "--map", help="Use to select map file (Use map or map2) ", action="store")
     args = parser.parse_args()
     global selectedmap
@@ -50,7 +50,7 @@ def main():
 
     screen_cols, screen_rows = screen_width / BLOCK_SIZE, screen_height / BLOCK_SIZE
     screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption('Platformer '+version)
+    pygame.display.set_caption('Platformer '+VERSION)
 
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 30)
@@ -162,17 +162,17 @@ def main():
             screen.blit(SPRITEGRAPHICS[sprites.type], sprites.rect.move(-screen_x, -screen_y))
         # Draw the inventory if necessary
         if invopen:
-            invframe = pygame.Rect(200, 200, 400, 400)
+            invframe = pygame.Rect(200, 200, 330, 400)
             invframe.center = screen_width/2, screen_height/2
-            innerframe = pygame.Rect(200, 200, 380, 200)
+            innerframe = pygame.Rect(200, 200, 310, 160)
             innerframe.bottomleft = invframe.left+10, invframe.bottom-10
             pygame.draw.rect(screen, (44, 44, 44), invframe)
             pygame.draw.rect(screen, (88, 88, 88), innerframe)
             objectframe = pygame.Rect(0, 0, 20, 20)
             left = innerframe.left+10
             top = innerframe.top+10
-            for raw in range(4):
-                for slot in range(12):
+            for raw in range(5):
+                for slot in range(10):
                     objectframe.topleft = left, top
                     pygame.draw.rect(screen, (100, 100, 100), objectframe)
                     # object[1] is the itemID, objimg is a list of loaded images
