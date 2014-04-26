@@ -52,6 +52,12 @@ or
 python platformer.py --map map
 ```
 
+The script should be marked as executable already, but in the case it's not, you can use this command to mark it:
+
+```shell
+chmod +x platformer.py
+```
+
 **CONTROLS**
 * Move with WASD
 * Jump with space

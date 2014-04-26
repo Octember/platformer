@@ -15,15 +15,16 @@ DEBUG = 1
 
 # Load the graphics
 # BLOCKS #
-landblock = pygame.image.load(LAND)
-skyblock = pygame.image.load(SKY)
-shrinkblock = pygame.image.load(SHRINK)
-growblock = pygame.image.load(GROW)
-ledgeblock = pygame.image.load(LEDGE)
+BLOCKGRAPHICS = { LAND : pygame.image.load(LAND),
+            SKY : pygame.image.load(SKY),
+            SHRINK : pygame.image.load(SHRINK),
+            GROW : pygame.image.load(GROW),
+            LEDGE: pygame.image.load(LEDGE) }
+
 # SPRITES #
-goombamat = pygame.image.load(GOOMBA)
-playermat = pygame.image.load(PLAYER)
-bulletmat = pygame.image.load(BULLET)
+SPRITEGRAPHICS = { 'Goomba' : pygame.image.load(GOOMBA),
+            'Player' : pygame.image.load(PLAYER),
+            'Bullet' : pygame.image.load(BULLET) }
 
 def argparser():
     parser = argparse.ArgumentParser(description="Platformer - A simple RPC", epilog="Written by Data5tream and Octember", version="v0.1-beta")
@@ -153,26 +154,12 @@ def main():
         for row in map.grid[grid_y : grid_y + screen_rows + 1]:
             for square in row[grid_x : grid_x + screen_cols + 1]:
                 # Select the correct block and blit it to the screen
-                if square.type == LAND:
-                    screen.blit(landblock, square.rect.move(-screen_x, -screen_y))
-                elif square.type == SKY:
-                    screen.blit(skyblock, square.rect.move(-screen_x, -screen_y))
-                elif square.type == SHRINK:
-                    screen.blit(shrinkblock, square.rect.move(-screen_x, -screen_y))
-                elif square.type == GROW:
-                    screen.blit(growblock, square.rect.move(-screen_x, -screen_y))
-                elif square.type == LEDGE:
-                    screen.blit(ledgeblock, square.rect.move(-screen_x, -screen_y))
+                screen.blit(BLOCKGRAPHICS[square.type], square.rect.move(-screen_x, -screen_y))
         # Draw health bar
         pygame.draw.rect(screen, (250, 0, 0), pygame.Rect(screen_width - 100, 5, player.health, 20), 0)
         # Draw sprites (Creatures, bullets, etc)
         for sprites in all_sprites:
-            if sprites.type == "Goomba":
-                screen.blit(goombamat, sprites.rect.move(-screen_x, -screen_y))
-            elif sprites.type == "Player":
-                screen.blit(playermat, sprites.rect.move(-screen_x, -screen_y))
-            elif sprites.type == "Bullet":
-                screen.blit(bulletmat, sprites.rect.move(-screen_x, -screen_y))
+            screen.blit(SPRITEGRAPHICS[sprites.type], sprites.rect.move(-screen_x, -screen_y))
         # Draw the inventory if necessary
         if invopen:
             invframe = pygame.Rect(200, 200, 400, 400)
