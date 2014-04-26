@@ -26,6 +26,9 @@ SPRITEGRAPHICS = { 'Goomba' : pygame.image.load(GOOMBA),
             'Player' : pygame.image.load(PLAYER),
             'Bullet' : pygame.image.load(BULLET) }
 
+# OBJECTS #
+#OBJIMG = { (objectID) : pygame.image.load(),}
+
 def argparser():
     parser = argparse.ArgumentParser(description="Platformer - A simple RPG", epilog="Written by Data5tream and Octember", version="v0.1-beta")
     parser.add_argument("-m", "--map", help="Use to select map file (Use map or map2) ", action="store")
@@ -175,10 +178,10 @@ def main():
                 for slot in range(10):
                     objectframe.topleft = left, top
                     pygame.draw.rect(screen, (100, 100, 100), objectframe)
-                    # object[1] is the itemID, objimg is a list of loaded images
+                    # object[1] is the itemID, OBJIMG is a dictonary of loaded images
                     '''
                     object = inventory.content[slot+(12*(raw-1))]
-                    screen.blit(objimg[object[1]], objectframe)
+                    screen.blit(OBJIMG[object[1]], objectframe)
                     '''
                     left += 30
                 left = innerframe.left+10
