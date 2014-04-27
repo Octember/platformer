@@ -27,7 +27,9 @@ SPRITEGRAPHICS = { 'Goomba' : pygame.image.load(GOOMBA),
             'Bullet' : pygame.image.load(BULLET) }
 
 # OBJECTS #
-#OBJIMG = { (objectID) : pygame.image.load(),}
+OBJIMG = { 0 : pygame.image.load(BULLET),
+            1 : pygame.image.load(LAND),
+            2 : pygame.image.load(SHRINK),}
 
 def argparser():
     parser = argparse.ArgumentParser(description="Platformer - A simple RPG", epilog="Written by Data5tream and Octember", version="v0.1-beta")
@@ -174,15 +176,13 @@ def main():
             objectframe = pygame.Rect(0, 0, 20, 20)
             left = innerframe.left+10
             top = innerframe.top+10
-            for raw in range(5):
+            for raw in range(2):
                 for slot in range(10):
                     objectframe.topleft = left, top
                     pygame.draw.rect(screen, (100, 100, 100), objectframe)
                     # object[1] is the itemID, OBJIMG is a dictonary of loaded images
-                    '''
-                    object = inventory.content[slot+(12*(raw-1))]
-                    screen.blit(OBJIMG[object[1]], objectframe)
-                    '''
+                    object = inventory.content[slot+(10*(raw-3))]
+                    screen.blit(OBJIMG[object[0]], objectframe)
                     left += 30
                 left = innerframe.left+10
                 top += 30
