@@ -127,7 +127,6 @@ def main():
                                 dragItem = slot
                                 dragging = 1
                 elif dragging:
-                    # Dragging routine goes here
                     if event.type == KEYDOWN:
                         if event.key == K_ESCAPE or event.key == K_i:
                             dragging = 0
@@ -226,6 +225,11 @@ def main():
                     left += 30
                 left = innerframe.left+10
                 top += 30
+            if dragging:
+                pos = pygame.mouse.get_pos()
+                objectframe.topleft = pos[0] , pos[1]
+                dobject = inventory.content[dragItem]
+                screen.blit(OBJIMG[str(dobject[0])], objectframe)
         # Draw FPS if necessary
         if DEBUG:
             text = font.render('FPS: ' + str(1000 / elapsed_time), True, (0, 0, 0), (250, 250, 250))
