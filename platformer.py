@@ -123,15 +123,23 @@ def main():
                     for slot in range(50):
                         if pos[0] in range(SLOTCORD[slot][0], SLOTCORD[slot][0]+20) and pos[1] in range(SLOTCORD[slot][1], SLOTCORD[slot][1]+20):
                             #Drag the item
+                            #dragItem = MATH TO CALCULATE SLOT GOES HERE
                             dragging = 1
                 elif dragging:
                     # Dragging routine goes here
-                    if event.key == K_ESCAPE or event.key == K_i:
-                        dragging = 0
-                        # Drop the item in previous slot
+                    if event.type == KEYDOWN:
+                        if event.key == K_ESCAPE or event.key == K_i:
+                            dragging = 0
+                            # Drop the item in previous slot
                     elif event.type == MOUSEBUTTONDOWN:
-                        dragging = 0
-                        # Drop the item in new slot
+                        for slot in range(50):
+                            # Test if there is a slot where the player clicked
+                            if pos[0] in range(SLOTCORD[slot][0], SLOTCORD[slot][0]+20) and pos[1] in range(SLOTCORD[slot][1], SLOTCORD[slot][1]+20):
+                                dragging = 0
+                                # Drop item in ew slot
+                            else:
+                                dragging = 0
+                                # Return item to previous slot
         '''
         TODO: Add an inventory so we don't have to disable this entirely.
         Add or remove land blocks from the selected square
