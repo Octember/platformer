@@ -46,6 +46,7 @@ for raw in range(5):
                     left += 30
                 left = innerframe.left+10
                 top += 30
+
 def argparser():
     parser = argparse.ArgumentParser(description="Platformer - A simple RPG", epilog="Written by Data5tream and Octember", version="v0.1-beta")
     parser.add_argument("-m", "--map", help="Use to select map file (Use map or map2) ", action="store")
@@ -76,6 +77,7 @@ def main():
     font = pygame.font.SysFont(None, 30)
 
     invopen = 0 # True if the inventory is open, false if not.
+    dragging = 0 # True if dragging an item, false if not.
 
     # Event loop
     right_down, left_down = False, False
@@ -85,25 +87,25 @@ def main():
             if invopen == 0: # If inventory isn't opened do this:
                 if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE: # Quit the game
                     return
-                if event.type == KEYDOWN: # Handle pushed keys
+                elif event.type == KEYDOWN: # Handle pushed keys
                     if event.key in (K_LEFT, K_a):
                         left_down = True
                         player.move_left()
-                    if event.key in (K_RIGHT, K_d):
+                    elif event.key in (K_RIGHT, K_d):
                         right_down = True
                         player.move_right()
-                    if event.key in (K_SPACE, K_w):
+                    elif event.key in (K_SPACE, K_w):
                         player.jump()
-                    if event.key == K_i:
+                    elif event.key == K_i:
                         invopen = 1
-                if event.type == KEYUP: # Handle released keys
+                elif event.type == KEYUP: # Handle released keys
                     if event.key in (K_LEFT, K_a):
                         player.move_right() if right_down else player.stop_x()
                         left_down = False
                     elif event.key in (K_RIGHT, K_d):
                         player.move_left() if left_down else player.stop_x()
                         right_down = False
-                if event.type == MOUSEBUTTONDOWN: # Handle mouse clicks
+                elif event.type == MOUSEBUTTONDOWN: # Handle mouse clicks
                     pos = pygame.mouse.get_pos()
                     bullet = player.shoot((pos[0] + screen_x, pos[1] + screen_y))
                     particles.add(bullet)
@@ -111,17 +113,25 @@ def main():
             elif invopen== 1: # If inventory is open do this:
                 if event.type == QUIT:
                     return
-                if event.type == KEYDOWN:
+                elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE or event.key == K_i:
                         invopen = 0
-                if event.type == MOUSEBUTTONDOWN:
+                elif event.type == MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     if pos[0] in range(invframe.right-30, invframe.right) and pos[1] in range(invframe.top, invframe.top+30):
                         invopen = 0
                     for slot in range(50):
                         if pos[0] in range(SLOTCORD[slot][0], SLOTCORD[slot][0]+20) and pos[1] in range(SLOTCORD[slot][1], SLOTCORD[slot][1]+20):
                             #Drag the item
-                            aps = 0
+                            dragging = 1
+                elif dragging:
+                    # Dragging routine goes here
+                    if event.key == K_ESCAPE or event.key == K_i:
+                        dragging = 0
+                        # Drop the item in previous slot
+                    elif event.type == MOUSEBUTTONDOWN:
+                        dragging = 0
+                        # Drop the item in new slot
         '''
         TODO: Add an inventory so we don't have to disable this entirely.
         Add or remove land blocks from the selected square
