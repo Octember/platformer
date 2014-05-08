@@ -131,8 +131,12 @@ class Creature(Sprite):
 The player! Our hero. We love him so
 '''
 class Player(Creature):
-    MAX_SPEED = 0.3
     DIMENSIONS = (30, 40)
+    MAXHEALTH = 100
+    SPEED = 1
+    ATTACK = 1
+    DEFENSE = 1
+    MAX_SPEED = 0.3+0.005*(SPEED-1)
     type = "Player"
 
     def __init__(self, position):
@@ -140,7 +144,7 @@ class Player(Creature):
         self.health = 100
 
     def jump(self):
-        Creature.jump(self, Player.MAX_SPEED)
+        Creature.jump(self, 0.3+0.002*(self.SPEED-1))
 
     def shrink(self):
         self.color = (0, 0, 0)

@@ -179,7 +179,7 @@ def main():
         # O(N^2)
         collided_enemies = pygame.sprite.spritecollide(player, goombas, True)
         for enemy in collided_enemies:
-            player.damage(10)
+            player.damage(10/Player.DEFENSE)
             # Display damage and health message
             if DEBUG:
                 print "[-] 10 Damage recieved from "+str(enemy)

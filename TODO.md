@@ -4,7 +4,7 @@ Platformer TODO
 Current
 ---
 - :white_large_square: Find new way to create maps
-- :white_check_mark: ~~Create inventory~~
+- :white_check_mark:  ~~Create inventory~~
 - :white_large_square: Extend configuration and add configuration file
 - :white_large_square: Place scripts in subfolders to keep main directory clean and prevent confusing users
 
