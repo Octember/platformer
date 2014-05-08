@@ -226,6 +226,21 @@ def main():
                     left += 30
                 left = innerframe.left+10
                 top += 30
+            statsrect = pygame.Rect(200, 200, 200, 200)
+            statsrect.top, statsrect.right = invframe.top+10, invframe.right-10
+            pygame.draw.rect(screen, (22, 22, 22), statsrect)
+            statsx, statsy = statsrect.left+10, statsrect.top+10
+            stats = font.render('Max. HP: '+str(Player.MAXHEALTH), True, (250, 250, 250), (22, 22, 22))
+            screen.blit(stats, (statsx, statsy))
+            statsy += 25
+            stats = font.render('Attack: '+str(Player.ATTACK), True, (250, 250, 250), (22, 22, 22))
+            screen.blit(stats, (statsx, statsy))
+            statsy += 25
+            stats = font.render('Defense: '+str(Player.DEFENSE), True, (250, 250, 250), (22, 22, 22))
+            screen.blit(stats, (statsx, statsy))
+            statsy += 25
+            stats = font.render('Speed: '+str(Player.SPEED), True, (250, 250, 250), (22, 22, 22))
+            screen.blit(stats, (statsx, statsy))
             if dragging:
                 pos = pygame.mouse.get_pos()
                 objectframe.topleft = pos[0] , pos[1]
