@@ -12,3 +12,4 @@ class inventory:
 
     content[0] = ITEMS['101']
     content[1] = ITEMS['100']
+    content[11] = ITEMS['100']

@@ -111,20 +111,21 @@ def main():
                     particles.add(bullet)
                     all_sprites.add(bullet)
             elif invopen== 1: # If inventory is open do this:
-                if event.type == QUIT:
-                    return
-                elif event.type == KEYDOWN:
-                    if event.key == K_ESCAPE or event.key == K_i:
-                        invopen = 0
-                elif event.type == MOUSEBUTTONDOWN:
-                    pos = pygame.mouse.get_pos()
-                    if pos[0] in range(invframe.right-30, invframe.right) and pos[1] in range(invframe.top, invframe.top+30):
-                        invopen = 0
-                    for slot in range(50):
-                        if pos[0] in range(SLOTCORD[slot][0], SLOTCORD[slot][0]+20) and pos[1] in range(SLOTCORD[slot][1], SLOTCORD[slot][1]+20):
-                            #Drag the item
-                            #dragItem = MATH TO CALCULATE SLOT GOES HERE
-                            dragging = 1
+                if dragging == 0:
+                    if event.type == QUIT:
+                        return
+                    elif event.type == KEYDOWN:
+                        if event.key == K_ESCAPE or event.key == K_i:
+                            invopen = 0
+                    elif event.type == MOUSEBUTTONDOWN:
+                        pos = pygame.mouse.get_pos()
+                        if pos[0] in range(invframe.right-30, invframe.right) and pos[1] in range(invframe.top, invframe.top+30):
+                            invopen = 0
+                        for slot in range(50):
+                            if pos[0] in range(SLOTCORD[slot][0], SLOTCORD[slot][0]+20) and pos[1] in range(SLOTCORD[slot][1], SLOTCORD[slot][1]+20):
+                                #Drag the item
+                                dragItem = slot
+                                dragging = 1
                 elif dragging:
                     # Dragging routine goes here
                     if event.type == KEYDOWN:
@@ -132,11 +133,12 @@ def main():
                             dragging = 0
                             # Drop the item in previous slot
                     elif event.type == MOUSEBUTTONDOWN:
+                        pos = pygame.mouse.get_pos()
                         for slot in range(50):
                             # Test if there is a slot where the player clicked
                             if pos[0] in range(SLOTCORD[slot][0], SLOTCORD[slot][0]+20) and pos[1] in range(SLOTCORD[slot][1], SLOTCORD[slot][1]+20):
                                 dragging = 0
-                                # Drop item in ew slot
+                                inventory.content[slot], inventory.content[dragItem]  = inventory.content[dragItem], inventory.content[slot]
                             else:
                                 dragging = 0
                                 # Return item to previous slot
@@ -216,7 +218,6 @@ def main():
             objectframe = pygame.Rect(0, 0, 20, 20)
             for raw in range(5):
                 for slot in range(10):
-
                     objectframe.topleft = left, top
                     pygame.draw.rect(screen, (100, 100, 100), objectframe)
                     # object[1] is the itemID, OBJIMG is a dictonary of loaded images
