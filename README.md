@@ -71,20 +71,20 @@ Configuration
 * In platformer.py lines 12 to 14:
 
 ```python
-screen_width = *Your desired screen width*
-screen_height = *Your desired screen height*
-DEBUG = 1 *set to 0 if you don't want debug messages and the FPS to show up*
+screen_width = # Your desired screen width
+screen_height = # Your desired screen height*
+DEBUG = 1 # set to 0 if you don't want debug messages and the FPS to show up
 ```
 * In platformer.py line 60:
 
 ```python
-selectedmap = 'map2.db' *Change this to 'map.db' if you want the first map to be loaded*
+selectedmap = 'map2.db' # Change this to 'map.db' if you want the first map to be loaded
 ```
 
 * In globals.py line 16:
 
 ```python
-GRAVITY = *desired gravity*
+GRAVITY = # desired gravity
 ```
 
 0.001 is normal Gravity, 0.0001 is funny to play. Over 0.002, jumping is almost impossible.
