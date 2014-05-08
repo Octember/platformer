@@ -27,7 +27,7 @@ SPRITEGRAPHICS = { 'Goomba' : pygame.image.load(GOOMBA),
             'Bullet' : pygame.image.load(BULLET) }
 
 # OBJECTS #
-OBJIMG = { '0' : pygame.image.load(BULLET),
+OBJIMG = { '0' : pygame.image.load('img/empty.png'),
             '100' : pygame.image.load(LAND),
             '101' : pygame.image.load(SHRINK) }
 
