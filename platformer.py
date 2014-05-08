@@ -27,9 +27,12 @@ SPRITEGRAPHICS = { 'Goomba' : pygame.image.load(GOOMBA),
             'Bullet' : pygame.image.load(BULLET) }
 
 # OBJECTS #
-OBJIMG = { 0 : pygame.image.load(BULLET),
-            1 : pygame.image.load(LAND),
-            2 : pygame.image.load(SHRINK),}
+OBJIMG = { '0' : pygame.image.load(BULLET),
+            '100' : pygame.image.load(LAND),
+            '101' : pygame.image.load(SHRINK) }
+
+# Inventory slot corrdinates #
+
 
 def argparser():
     parser = argparse.ArgumentParser(description="Platformer - A simple RPG", epilog="Written by Data5tream and Octember", version="v0.1-beta")
@@ -40,7 +43,7 @@ def argparser():
         selectedmap = 'map.db'
     elif args.map == 'map2':
         selectedmap = 'map2.db'
-    else:
+    else: # Default map
         selectedmap = 'map2.db'
 
 def main():
@@ -182,7 +185,7 @@ def main():
                     pygame.draw.rect(screen, (100, 100, 100), objectframe)
                     # object[1] is the itemID, OBJIMG is a dictonary of loaded images
                     object = inventory.content[slot+(10*(raw-3))]
-                    screen.blit(OBJIMG[object[0]], objectframe)
+                    screen.blit(OBJIMG[str(object[0])], objectframe)
                     left += 30
                 left = innerframe.left+10
                 top += 30

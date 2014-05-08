@@ -10,5 +10,5 @@ class inventory:
     for slot in range(30):
         content.append([0,'none'])
 
-    content[0] = [1,'TEST-1']
-    content[1] = [2,'TEST-2']
+    content[0] = ITEMS['101']
+    content[1] = ITEMS['100']
