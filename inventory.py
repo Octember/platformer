@@ -7,7 +7,7 @@ itemID = 1
 number = 1
 class inventory:
     content = []
-    for slot in range(30):
+    for slot in range(50):
         content.append([0,'none'])
 
     content[0] = ITEMS['101']

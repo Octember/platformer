@@ -32,8 +32,20 @@ OBJIMG = { '0' : pygame.image.load(BULLET),
             '101' : pygame.image.load(SHRINK) }
 
 # Inventory slot corrdinates #
-
-
+SLOTCORD = []
+invframe = pygame.Rect(200, 200, 330, 400)
+invframe.center = screen_width/2, screen_height/2
+innerframe = pygame.Rect(200, 200, 310, 160)
+innerframe.bottomleft = invframe.left+10, invframe.bottom-10
+left = innerframe.left+10
+top = innerframe.top+10
+objectframe = pygame.Rect(0, 0, 20, 20)
+for raw in range(5):
+                for slot in range(10):
+                    SLOTCORD.append([left, top])
+                    left += 30
+                left = innerframe.left+10
+                top += 30
 def argparser():
     parser = argparse.ArgumentParser(description="Platformer - A simple RPG", epilog="Written by Data5tream and Octember", version="v0.1-beta")
     parser.add_argument("-m", "--map", help="Use to select map file (Use map or map2) ", action="store")
@@ -106,20 +118,24 @@ def main():
                     pos = pygame.mouse.get_pos()
                     if pos[0] in range(invframe.right-30, invframe.right) and pos[1] in range(invframe.top, invframe.top+30):
                         invopen = 0
-                '''
-                TODO: Add an inventory so we don't have to disable this entirely.
-                Add or remove land blocks from the selected square
+                    for slot in range(50):
+                        if pos[0] in range(SLOTCORD[slot][0], SLOTCORD[slot][0]+20) and pos[1] in range(SLOTCORD[slot][1], SLOTCORD[slot][1]+20):
+                            #Drag the item
+                            aps = 0
+        '''
+        TODO: Add an inventory so we don't have to disable this entirely.
+        Add or remove land blocks from the selected square
 
-                pos = pygame.mouse.get_pos()
-                x, y = int(pos[0] + screen_x) / BLOCK_SIZE, int(pos[1] + screen_y) / BLOCK_SIZE
-                 tile = map.grid[y][x]
-                if event.button == 1 and tile.color == LAND:
-                    map.walls.remove(tile.rect)
-                    tile.color = SKY
-                elif event.button == 3 and tile.color == SKY:
-                    map.walls.append(tile)
-                    tile.color = LAND
-                '''
+        pos = pygame.mouse.get_pos()
+        x, y = int(pos[0] + screen_x) / BLOCK_SIZE, int(pos[1] + screen_y) / BLOCK_SIZE
+         tile = map.grid[y][x]
+        if event.button == 1 and tile.color == LAND:
+            map.walls.remove(tile.rect)
+            tile.color = SKY
+        elif event.button == 3 and tile.color == SKY:
+            map.walls.append(tile)
+            tile.color = LAND
+        '''
         elapsed_time = clock.tick()
 
         # If player's healty drops beyond 0, end the game
@@ -174,17 +190,19 @@ def main():
             invframe.center = screen_width/2, screen_height/2
             innerframe = pygame.Rect(200, 200, 310, 160)
             innerframe.bottomleft = invframe.left+10, invframe.bottom-10
+            left = innerframe.left+10
+            top = innerframe.top+10
+            objectframe = pygame.Rect(0, 0, 20, 20)
             pygame.draw.rect(screen, (44, 44, 44), invframe)
             pygame.draw.rect(screen, (88, 88, 88), innerframe)
             objectframe = pygame.Rect(0, 0, 20, 20)
-            left = innerframe.left+10
-            top = innerframe.top+10
-            for raw in range(2):
+            for raw in range(5):
                 for slot in range(10):
+
                     objectframe.topleft = left, top
                     pygame.draw.rect(screen, (100, 100, 100), objectframe)
                     # object[1] is the itemID, OBJIMG is a dictonary of loaded images
-                    object = inventory.content[slot+(10*(raw-3))]
+                    object = inventory.content[slot+(10*(raw-5))]
                     screen.blit(OBJIMG[str(object[0])], objectframe)
                     left += 30
                 left = innerframe.left+10
