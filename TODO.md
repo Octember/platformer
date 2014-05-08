@@ -4,7 +4,7 @@ Platformer TODO
 Current
 ---
 * Find new way to create maps
-* Create inventory
+* ~~Create inventory~~
 * Extend configuration and add configuration file
 * Place scripts in subfolders to keep main directory clean and prevent confusing users
 
