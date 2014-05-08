@@ -123,9 +123,10 @@ def main():
                             invopen = 0
                         for slot in range(50):
                             if pos[0] in range(SLOTCORD[slot][0], SLOTCORD[slot][0]+20) and pos[1] in range(SLOTCORD[slot][1], SLOTCORD[slot][1]+20):
-                                #Drag the item
-                                dragItem = slot
-                                dragging = 1
+                                #Drag the item if the selected slot is not empty
+                                if inventory.content[slot][0] != 0:
+                                    dragItem = slot
+                                    dragging = 1
                 elif dragging:
                     if event.type == KEYDOWN:
                         if event.key == K_ESCAPE or event.key == K_i:
