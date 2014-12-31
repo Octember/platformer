@@ -28,13 +28,15 @@ sudo apt-get install python-pygame
 
 * Download the source
 
-```shell
+    * Via git:
+
+    ```shell
 git clone https://github.com/Octember/platformer.git
 ```
 
-* or download the source as .zip file and extract it somewhere.
+    * or download the source as .zip file and extract it somewhere.
 
-The script should be marked as executable already, but in the case it's not, you can use this command to mark it:
+The script should be marked as executable already, but in the case it's not, you can use this command to mark it so:
 
 ```shell
 chmod +x platformer.py
@@ -54,7 +56,7 @@ or
 python platformer.py
 ```
 
-*Running the script this way, it will automatically load the map 'map2.db'.*
+*Running the script this way will automatically load the map 'map2.db'.*
 
 Running the game with the first map:
 
