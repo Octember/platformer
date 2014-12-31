@@ -32,7 +32,7 @@ sudo apt-get install python-pygame
 git clone https://github.com/Octember/platformer.git
 ```
 
-     or download the source as .zip file and extract it somewhere.
+* or download the source as .zip file and extract it somewhere.
 
 The script should be marked as executable already, but in the case it's not, you can use this command to mark it:
 
