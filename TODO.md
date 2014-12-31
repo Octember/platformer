@@ -15,6 +15,6 @@ Future
 - :white_large_square: Make saving progress posible
 - :white_large_square: Dinamic map creation
 
-Personal Ideas
+Personal Ideas of Data5tream
 ---
 - :white_large_square: Multiplayer (2-8 players, LAN and direct IP)

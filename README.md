@@ -23,7 +23,15 @@ Installation & requirements
 ```shell
 git clone https://github.com/Octember/platformer.git
 ```
-    
+
+or download the source as .zip file and extract it somewhere.
+
+The script should be marked as executable already, but in the case it's not, you can use this command to mark it:
+
+```shell
+chmod +x platformer.py
+```
+
 How to play
 ---
 
@@ -33,7 +41,7 @@ How to play
 ./platformer.py
 ```
 or
-    
+
 ```shell
 python platformer.py
 ```
@@ -52,12 +60,6 @@ or
 python platformer.py --map map
 ```
 
-The script should be marked as executable already, but in the case it's not, you can use this command to mark it:
-
-```shell
-chmod +x platformer.py
-```
-
 **CONTROLS**
 * Move with WASD
 * Jump with space
@@ -67,12 +69,12 @@ chmod +x platformer.py
 
 Configuration
 ---
-	
+
 * In platformer.py lines 12 to 14:
 
 ```python
 screen_width = # Your desired screen width
-screen_height = # Your desired screen height*
+screen_height = # Your desired screen height
 DEBUG = 1 # set to 0 if you don't want debug messages and the FPS to show up
 ```
 * In platformer.py line 60:
