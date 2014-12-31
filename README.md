@@ -13,10 +13,18 @@ Installation & requirements
 
 **Requirements**
 
-* Requires Python
-* Requires PyGame
+* Requires [Python 2.x](https://www.python.org)
+* Requires [PyGame](http://www.pygame.org)
 
 **Installation**
+
+* Download and install PyGame:
+    * From Universe via apt-get:
+
+    ```shell
+sudo apt-get install python-pygame
+```
+    * From the [PyGame website](http://www.pygame.org/download.shtml).
 
 * Download the source
 
@@ -24,7 +32,7 @@ Installation & requirements
 git clone https://github.com/Octember/platformer.git
 ```
 
-or download the source as .zip file and extract it somewhere.
+     or download the source as .zip file and extract it somewhere.
 
 The script should be marked as executable already, but in the case it's not, you can use this command to mark it:
 
